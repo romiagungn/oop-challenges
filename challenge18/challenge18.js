@@ -95,3 +95,62 @@ silahkan pilih opsi dibawah ini
         }
     })
 };
+
+function daftarmurid() {
+    console.log("=========================================================");
+    db.serialize(function () {
+
+        let sql = `SELECT nim, nama, alamat, nama_jurusan, umur FROM mahasiswa JOIN jurusan ON mahasiswa.jurusan = jurusan.id_jurusan`;
+        // `SELECT nim, nama, alamat, nama_jurusan, umur FROM mahasiswa JOIN jurusan ON mahasiswa.jurusan = jurusan.id_jurusan`
+
+        db.all(sql, (err, rows) => {
+            if (err) throw err;
+            if (rows) {
+                var table = new Table({
+                    head: ['nim', 'nama', 'alamat', 'jurusan', 'umur'],
+                    colWidths: [10, 10, 10, 20, 10]
+                });
+                rows.forEach(rows => {
+                    table.push(
+                        [`${rows.nim}`, `${rows.nama}`, `${rows.alamat}`, `${rows.nama_jurusan}`, `${rows.umur}`]
+                    );
+                });
+                console.log(table.toString());
+                mahasiswa();
+
+
+                //console.log(`${rows.nim}, ${rows.nama}, ${rows.alamat}, ${rows.jurusan}, ${rows.umur} `);
+            }
+            else {
+                console.log("DATA TIDAK BISA DITEMUKAN!!!");
+            }
+        });
+    });
+    rl.close()
+}
+
+function carimurid() {
+    rl.question(`Masukan Nim: `, (nim) => {
+        let sql = `SELECT nim, nama, alamat, nama_jurusan, umur FROM mahasiswa JOIN jurusan ON mahasiswa.jurusan = jurusan.id_jurusan WHERE nim = '${nim}'`
+        db.get(sql, (err, rows) => {
+            if (err) throw err;
+
+            if (rows) {
+                console.log(`
+=========================================================
+Student Detail
+=========================================================
+ID      : ${rows.nim}
+NAMA    : ${rows.nama}
+ALAMAT  : ${rows.alamat}
+JURUSAN : ${rows.nama_jurusan}
+UMUR    : ${rows.umur} tahun
+`);
+                mahasiswa();
+            } else {
+                console.log(`Mahasiswa dengan nim ${nim} tidak terdaftar`)
+                mahasiswa();
+            }
+        })
+    })
+};
