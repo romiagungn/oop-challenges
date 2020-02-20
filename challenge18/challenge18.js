@@ -154,3 +154,88 @@ UMUR    : ${rows.umur} tahun
         })
     })
 };
+
+function tambahmurid() {
+    console.log(`
+=========================================================
+lengkapi data dibawah ini :
+    `)
+    rl.question('NIM : ', (nim) => {
+        rl.question('NAMA : ', (nama) => {
+            rl.question('ALAMAT : ', (alamat) => {
+                rl.question('JURUSAN : ', (jurusan) => {
+                    rl.question('UMUR : ', (umur) => {
+                        let sql = `INSERT INTO mahasiswa (nim, nama, alamat, jurusan, umur) values ('${nim}', '${nama}', '${alamat}', '${jurusan}', '${umur}')`;
+                        db.run(sql, (err) => {
+                            if (err) throw err;
+                            console.log("Data Mahasiswa Berhasil di input")
+                        });
+
+                        let sql2 = `SELECT nim, nama, alamat, nama_jurusan, umur FROM mahasiswa JOIN jurusan ON mahasiswa.jurusan = jurusan.id_jurusan`;
+                        db.all(sql2, (err, rows) => {
+                            if (err) throw err;
+                            if (rows) {
+                                // console.log('selamat data yang anda masukan berhasil')
+
+                                var table = new Table({
+                                    head: ['nim', 'nama', 'alamat', 'jurusan', 'umur'],
+                                    colWidths: [10, 10, 10, 20, 10]
+                                });
+                                rows.forEach(rows => {
+                                    table.push(
+                                        [`${rows.nim}`, `${rows.nama}`, `${rows.alamat}`, `${rows.nama_jurusan}`, `${rows.umur}`]
+                                    );
+                                });
+                                console.log(table.toString());
+                                mahasiswa();
+
+
+                            } else {
+                                console.log('data yang anda masukan salah');
+                                mahasiswa();
+                            }
+                        })
+                    })
+                })
+            })
+        })
+    })
+}
+
+function deletemurid() {
+    rl.question('masukan NIM yang akan di hapus : ', (nim) => {
+        let sql = `DELETE FROM mahasiswa WHERE nim = '${nim}'`;
+        let sql2 = `SELECT nim, nama, alamat, nama_jurusan, umur FROM mahasiswa JOIN jurusan ON mahasiswa.jurusan = jurusan.id_jurusan`;
+        db.run(sql, (err) => {
+            if (!err) console.log(`mahasiswa dengan NIM : '${nim}' telah dihapus`);
+            console.log("=========================================================")
+
+
+            db.all(sql2, (err, rows) => {
+                if (err) throw err;
+                if (rows) {
+                    // console.log('selamat data yang anda masukan berhasil')
+
+                    var table = new Table({
+                        head: ['nim', 'nama', 'alamat', 'jurusan', 'umur'],
+                        colWidths: [10, 10, 10, 20, 10]
+                    });
+                    rows.forEach(rows => {
+                        table.push(
+                            [`${rows.nim}`, `${rows.nama}`, `${rows.alamat}`, `${rows.nama_jurusan}`, `${rows.umur}`]
+                        );
+                    });
+                    console.log(table.toString());
+                    mahasiswa();
+
+
+                } else {
+                    console.log('data yang anda masukan salah');
+                    mahasiswa();
+                }
+            })
+        })
+
+    })
+
+}
