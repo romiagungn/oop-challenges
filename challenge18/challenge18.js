@@ -14,35 +14,36 @@ const rl = readline.createInterface({
     output: process.stdout,
 });
 
-console.log(`
-=========================================================
-Welcome to Universitas Pendidikan Indonesia
-JL. Setiabudi No.255
-=========================================================
-`);
-    rl.question(`username :`, (username) => {
-        console.log(`=========================================================`);
-        rl.question(`password :`, (password) => {
-            console.log(`=========================================================`);
+// console.log(`
+// =========================================================
+// Welcome to Universitas Pendidikan Indonesia
+// JL. Setiabudi No.255
+// =========================================================
+// `);
+// rl.question(`username :`, (username) => {
+//     console.log(`=========================================================`);
+//     rl.question(`password :`, (password) => {
+//         console.log(`=========================================================`);
 
-            db.serialize(function () {
+//         db.serialize(function () {
 
-                let sql = `SELECT * FROM users WHERE username == '${username}' AND password == '${password}'`;
-                db.get(sql, (err, rows) => {
-                    if (err) throw err;
-                    if (rows) {
-                        console.log(`Welcome, ${rows.username}. YOUR access level is: ${rows.user}`);
-                        mainmenu();
-                    }
-                    else {
-                        console.log("USERNAME atau PASSWORD salah men!!!");
-                    }
-                })
-            })
-        })
-    })
+//             let sql = `SELECT * FROM users WHERE username == '${username}' AND password == '${password}'`;
+//             db.get(sql, (err, rows) => {
+//                 if (err) throw err;
+//                 if (rows) {
+//                     console.log(`Welcome, ${rows.username}. YOUR access level is: ${rows.user}`);
+//                     mainmenu();
+//                 }
+//                 else {
+//                     console.log("USERNAME atau PASSWORD salah men!!!");
+//                     rl.close();
+//                 }
+//             })
+//         })
+//     })
+// })
 
-function mainmenu() {
+// function mainmenu() {
     console.log(`
 =========================================================
 silahkan pilih opsi dibawah ini
@@ -63,10 +64,10 @@ silahkan pilih opsi dibawah ini
                 break;
         }
     })
-}
+// }
 
 function mahasiswa() {
-console.log(`
+    console.log(`
 =========================================================
 silahkan pilih opsi dibawah ini
 [1] Daftar Murid
@@ -239,3 +240,73 @@ function deletemurid() {
     })
 
 }
+function jurusan() {
+    console.log(`
+=========================================================
+silahkan pilih opsi dibawah ini
+[1] Daftar Jurusan
+[2] Cari Jurusan
+[3] Tambah Jurusan
+[4] Hapus Jurusan
+[5] Keuar
+=========================================================`)
+    rl.question(`masukan salah satu no. dari opsi diatas : `, (number) => {
+        console.log('=========================================================');
+        switch (number) {
+            case '1':
+                daftarjurusan();
+                break;
+            case '2':
+                carijurusan();
+                break;
+        }
+    })
+};
+
+function daftarjurusan() {
+    console.log("=========================================================");
+    db.serialize(function () {
+        let sql = 'SELECT * FROM jurusan';
+
+        db.all(sql, (err, rows) => {
+            if (err) throw err;
+            if (rows) {
+                var table = new Table({
+                    head: ['ID JURUSAN', 'NAMA JURUSAN'],
+                    colWidths: [10, 20]
+                })
+                rows.forEach(rows => {
+                    table.push([`${rows.id_jurusan}`, `${rows.nama_jurusan}`]);
+                })
+                console.log(table.toString());
+                jurusan();
+            }
+            else {
+                console.log("DATA TIDAK BISA DI TEMUKAN!!!");
+                jurusan();
+            }
+        })
+    })
+}
+
+function carijurusan() {
+        rl.question(`MASUKAN ID JURUSAN: `, (answer) => {
+            let sql = `SELECT * FROM jurusan WHERE id_jurusan = '${answer}'`
+            db.get(sql, (err, rows) => {
+                if (err) throw err;
+                if (rows) {
+                    console.log(`
+=========================================================
+JURUSAN DETAIL
+=========================================================
+ID JURUSAN      : ${rows.id_jurusan}
+NAMA JURUSAN    : ${rows.nama_jurusan}
+`);
+                    jurusan();
+                } else {
+                    console.log(`ID jurusan dengan ID : ${answer} tidak ditemukan`);
+                    jurusan();
+                }
+            })
+        })
+    }
