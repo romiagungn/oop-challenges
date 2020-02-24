@@ -31,8 +31,7 @@ JL. Setiabudi No.255
                 if (rows) {
                     console.log(`Welcome, ${rows.username}. YOUR access level is: ${rows.user}`);
                     mainmenu();
-                }
-                else {
+                } else {
                     console.log("USERNAME atau PASSWORD salah men!!!");
                     login();
                 }
@@ -133,8 +132,7 @@ function daftarmurid() {
                 console.log(table.toString());
                 mahasiswa();
                 //console.log(`${rows.nim}, ${rows.nama}, ${rows.alamat}, ${rows.jurusan}, ${rows.umur} `);
-            }
-            else {
+            } else {
                 console.log("DATA TIDAK BISA DITEMUKAN!!!");
                 mahasiswa();
             }
@@ -245,6 +243,7 @@ function deletemurid() {
     })
 
 }
+
 function jurusan() {
     console.log(`
 =========================================================
@@ -378,8 +377,7 @@ function hapusjurusan() {
                     })
                     console.log(table.toString());
                     jurusan();
-                }
-                else {
+                } else {
                     console.log("DATA TIDAK BISA DI TEMUKAN!!!");
                     jurusan();
                 }
@@ -724,7 +722,7 @@ function daftarKontrak() {
                 })
                 console.log(table.toString());
                 kontrak();
-            }  else {
+            } else {
                 console.log("DATA TIDAK BISA DI TEMUKAN!!!");
                 kontrak();
             }
