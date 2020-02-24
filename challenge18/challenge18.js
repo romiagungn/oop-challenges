@@ -7,25 +7,23 @@ let db = new sqlite3.Database(dbFile, sqlite3.OPEN_READWRITE, (err) => {
     if (err) throw err;
     // console.log("Koneksi ke database berhasil!");
 });
-module.exports = db;
 
 const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
 });
 
-console.log(`
+function login() {
+    console.log(`
 =========================================================
 Welcome to Universitas Pendidikan Indonesia
 JL. Setiabudi No.255
 =========================================================
 `);
-rl.question(`username :`, (username) => {
-    console.log(`=========================================================`);
-    rl.question(`password :`, (password) => {
-        console.log(`=========================================================`);
-
-        db.serialize(function () {
+    rl.question('username: ', (username) => {
+        console.log(`=========================================================`)
+        rl.question('password: ', (password) => {
+            console.log(`=========================================================`)
 
             let sql = `SELECT * FROM users WHERE username == '${username}' AND password == '${password}'`;
             db.get(sql, (err, rows) => {
@@ -36,12 +34,12 @@ rl.question(`username :`, (username) => {
                 }
                 else {
                     console.log("USERNAME atau PASSWORD salah men!!!");
-                    rl.close();
+                    login();
                 }
             })
         })
     })
-})
+}
 
 function mainmenu() {
     console.log(`
@@ -62,6 +60,24 @@ silahkan pilih opsi dibawah ini
             case '2':
                 jurusan();
                 break;
+            case '3':
+                dosen();
+                break;
+            case '4':
+                matakuliah();
+                break;
+            case '5':
+                kontrak();
+                break;
+            case '6':
+                console.log("=========================================================");
+                console.log("kamu telah keluar.");
+                login();
+                break;
+            default:
+                console.log(`=========================================================
+maaf number yang anda inputkan salah`);
+                mainmenu();
         }
     })
 }
@@ -281,7 +297,7 @@ function daftarjurusan() {
             if (rows) {
                 var table = new Table({
                     head: ['ID JURUSAN', 'NAMA JURUSAN'],
-                    colWidths: [10, 20]
+                    colWidths: [20, 20]
                 })
                 rows.forEach(rows => {
                     table.push([`${rows.id_jurusan}`, `${rows.nama_jurusan}`]);
@@ -332,7 +348,7 @@ Lengkapi Data dibawah ini :
                 console.log("Data Jurusan Berhasil di Input");
             });
 
-            let sql2 = 'SELECT id_jurusan , nama_jurusan FROM jurusan';
+            let sql2 = 'SELECT * FROM jurusan';
             db.all(sql2, (err, rows) => {
                 if (err) throw err;
                 if (rows) {
@@ -355,3 +371,201 @@ Lengkapi Data dibawah ini :
     })
 }
 
+function hapusjurusan() {
+    rl.question('Masukan ID jurusan yang akan di hapus : ', (id2) => {
+        let sql = `DELETE FROM jurusan WHERE id_jurusan = '${id2}'`;
+        db.run(sql, (err) => {
+            if (!err) console.log(`Jurusan dengan ID JURUSAN : '${id2}' telah dihapus`);
+            console.log("=========================================================");
+
+            let sql2 = 'SELECT * FROM jurusan';
+            db.all(sql2, (err, rows) => {
+                if (err) throw err;
+                if (rows) {
+                    var table = new Table({
+                        head: ['ID JURUSAN', 'NAMA JURUSAN'],
+                        colWidths: [10, 20]
+                    })
+                    rows.forEach(rows => {
+                        table.push(
+                            [`${rows.id_jurusan}`, `${rows.nama_jurusan}`]
+                        );
+                    })
+                    console.log(table.toString());
+                    jurusan();
+                }
+                else {
+                    console.log("DATA TIDAK BISA DI TEMUKAN!!!");
+                    jurusan();
+                }
+            })
+        })
+    })
+}
+
+function dosen() {
+    console.log(`
+=========================================================
+silahkan pilih opsi dibawah ini
+[1] Daftar Dosen
+[2] Cari Dosen
+[3] Tambah Dosen
+[4] Hapus Dosen
+[5] Keluar
+=========================================================`)
+    rl.question(`masukan salah satu no. dari opsi diatas : `, (number) => {
+        console.log('=========================================================');
+        switch (number) {
+            case '1':
+                daftardosen();
+                break;
+            case '2':
+                caridosen();
+                break;
+            case '3':
+                tambahdosen();
+                break;
+            case '4':
+                hapusdosen();
+                break;
+            case '5':
+                mainmenu();
+        }
+    })
+}
+
+function daftardosen() {
+    console.log("=========================================================");
+    db.serialize(function () {
+        let sql = 'SELECT * FROM dosen';
+
+        db.all(sql, (err, rows) => {
+            if (err) throw err;
+            if (rows) {
+                var table = new Table({
+                    head: ['ID DOSEN', 'NAMA DOSEN'],
+                    colWidths: [20, 20]
+                })
+                rows.forEach(rows => {
+                    table.push([`${rows.id_dosen}`, `${rows.nama_dosen}`]);
+                })
+                console.log(table.toString());
+                dosen();
+            }
+            else {
+                console.log("DATA TIDAK BISA DI TEMUKAN!!!");
+                dosen();
+            }
+        })
+    })
+}
+function caridosen() {
+    rl.question(`MASUKAN ID DOSEN: `, (answer) => {
+        let sql = `SELECT * FROM dosen WHERE id_dosen = '${answer}'`
+        db.get(sql, (err, rows) => {
+            if (err) throw err;
+            if (rows) {
+                console.log(`
+=========================================================
+JURUSAN DETAIL
+=========================================================
+ID DOSEN      : ${rows.id_dosen}
+NAMA DOSEN    : ${rows.nama_dosen}
+`);
+                dosen();
+            } else {
+                console.log(`ID dosen dengan ID : ${answer} tidak ditemukan`);
+                dosen();
+            }
+        })
+    })
+}
+
+function tambahdosen() {
+    console.log(`
+=========================================================
+Lengkapi Data dibawah ini :
+        `)
+    rl.question('ID DOSEN : ', (id) => {
+        rl.question('NAMA DOSEN : ', (nama) => {
+            let sql = `INSERT INTO dosen (id_dosen,nama_dosen) VALUES ('${id}','${nama}')`;
+            db.run(sql, (err) => {
+                if (err) throw err;
+                console.log("Data Jurusan Berhasil di Input");
+            });
+
+            let sql2 = 'SELECT * FROM dosen';
+            db.all(sql2, (err, rows) => {
+                if (err) throw err;
+                if (rows) {
+                    var table = new Table({
+                        head: ['ID DOSEN', 'NAMA DOSEN'],
+                        colWidths: [10, 20]
+                    })
+                    rows.forEach(rows => {
+                        table.push([`${rows.id_dosen}`, `${rows.nama_dosen}`]);
+                    })
+                    console.log(table.toString());
+                    dosen();
+                }
+                else {
+                    console.log("DATA TIDAK BISA DI TEMUKAN!!!");
+                    dosen();
+                }
+            })
+        })
+    })
+}
+
+function hapusdosen() {
+    rl.question('Masukan ID dosen yang akan di hapus : ', (id2) => {
+        let sql = `DELETE FROM dosen WHERE id_dosen = '${id2}'`;
+        db.run(sql, (err) => {
+            if (!err) console.log(`DOSEN dengan ID DOSEN : '${id2}' telah dihapus`);
+            console.log("=========================================================");
+
+            let sql2 = 'SELECT * FROM dosen';
+            db.all(sql2, (err, rows) => {
+                if (err) throw err;
+                if (rows) {
+                    var table = new Table({
+                        head: ['ID DOSEN', 'NAMA DOSEN'],
+                        colWidths: [20, 20]
+                    })
+                    rows.forEach(rows => {
+                        table.push(
+                            [`${rows.id_dosen}`, `${rows.nama_dosen}`]
+                        );
+                    })
+                    console.log(table.toString());
+                    dosen();
+                }
+                else {
+                    console.log("DATA TIDAK BISA DI TEMUKAN!!!");
+                    dosen();
+                }
+            })
+        })
+    })
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+login();
