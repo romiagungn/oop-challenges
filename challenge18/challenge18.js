@@ -549,7 +549,158 @@ function hapusdosen() {
     })
 }
 
+function matakuliah() {
+    console.log(`
+=========================================================
+silahkan pilih opsi dibawah ini
+[1] Daftar Mata Kuliah
+[2] Cari Mata Kuliah
+[3] Tambah Mata Kuliah
+[4] Hapus Mata Kuliah
+[5] Keluar
+=========================================================`)
+    rl.question(`masukan salah satu no. dari opsi diatas : `, (number) => {
+        console.log('=========================================================');
+        switch (number) {
+            case '1':
+                daftarMatkul();
+                break;
+            case '2':
+                cariMatkul();
+                break;
+            case '3':
+                tambahMatkul();
+                break;
+            case '4':
+                hapusMatkul();
+                break;
+            case '5':
+                mainmenu();
+        }
+    })
+};
 
+function daftarMatkul() {
+    console.log("=========================================================");
+    db.serialize(function () {
+        let sql = 'SELECT * FROM mata_kuliah';
+
+        db.all(sql, (err, rows) => {
+            if (err) throw err;
+            if (rows) {
+                var table = new Table({
+                    head: ['ID MATA KULIAH', 'NAMA MATA KULIAH', 'SKS'],
+                    colWidths: [20, 20, 10]
+                })
+                rows.forEach(rows => {
+                    table.push([`${rows.id_matkul}`, `${rows.nama_matkul}`, `${rows.sks}`]);
+                })
+                console.log(table.toString());
+                matakuliah();
+            }
+            else {
+                console.log("DATA TIDAK BISA DI TEMUKAN!!!");
+                matakuliah();
+            }
+        })
+    })
+}
+
+function cariMatkul() {
+    rl.question(`MASUKAN ID MATA KULIAH: `, (answer) => {
+        let sql = `SELECT * FROM mata_kuliah WHERE id_matkul = '${answer}'`
+        db.get(sql, (err, rows) => {
+            if (err) throw err;
+            if (rows) {
+                console.log(`
+=========================================================
+JURUSAN DETAIL
+=========================================================
+ID MATA KULIAH      : ${rows.id_matkul}
+NAMA MATA KULIAH    : ${rows.nama_matkul}
+SKS                 : ${rows.sks}
+`);
+                matakuliah();
+            } else {
+                console.log(`ID mata kuliah dengan ID : ${answer} tidak ditemukan`);
+                matakuliah();
+            }
+        })
+    })
+}
+
+function tambahMatkul() {
+    console.log(`
+=========================================================
+Lengkapi Data dibawah ini :
+        `)
+    rl.question('ID MATA KULIAH : ', (id) => {
+        rl.question('NAMA MATA KULIAH : ', (nama) => {
+            rl.question('JUMLAH SKS : ', (sks) => {
+                let sql = `INSERT INTO mata_kuliah (id_matkul,nama_matkul,sks) VALUES ('${id}','${nama}','${sks}')`;
+                db.run(sql, (err) => {
+                    if (err) throw err;
+                    console.log("Data Mata Kuliah Berhasil di Input");
+                });
+
+                let sql2 = 'SELECT * FROM mata_kuliah';
+                db.all(sql2, (err, rows) => {
+                    if (err) throw err;
+                    if (rows) {
+                        var table = new Table({
+                            head: ['ID MATA KULIAH', 'NAMA MATA KULIAH', 'SKS'],
+                            colWidths: [20, 20, 10]
+                        })
+                        rows.forEach(rows => {
+                            table.push([`${rows.id_matkul}`, `${rows.nama_matkul}`,`${rows.sks}`]);
+                        })
+                        console.log(table.toString());
+                        matakuliah();
+                    }
+                    else {
+                        console.log("DATA TIDAK BISA DI TEMUKAN!!!");
+                        matakuliah();
+                    }
+                })
+            })
+        })
+    })
+}
+
+function hapusMatkul() {
+    rl.question('Masukan ID Mata Kuliah yang akan di hapus : ', (id2) => {
+        let sql = `DELETE FROM mata_kuliah WHERE id_matkul = '${id2}'`;
+        db.run(sql, (err) => {
+            if (!err) console.log(`Mata Kuliah dengan ID Mata kuliah : '${id2}' telah dihapus`);
+            console.log("=========================================================");
+
+            let sql2 = 'SELECT * FROM mata_kuliah';
+            db.all(sql2, (err, rows) => {
+                if (err) throw err;
+                if (rows) {
+                    var table = new Table({
+                        head: ['ID MATA KULIAH', 'NAMA MATA KULIAH', 'SKS'],
+                        colWidths: [20, 20, 10]
+                    })
+                    rows.forEach(rows => {
+                        table.push([`${rows.id_matkul}`, `${rows.nama_matkul}`,`${rows.sks}`]);
+                    })
+                    console.log(table.toString());
+                    matakuliah();
+                }
+                else {
+                    console.log("DATA TIDAK BISA DI TEMUKAN!!!");
+                    matakuliah();
+                }
+            })
+        })
+    })
+}
+
+function kontrak() {
+
+    
+}
 
 
 
