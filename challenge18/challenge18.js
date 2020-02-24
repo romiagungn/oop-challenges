@@ -118,8 +118,6 @@ function daftarmurid() {
     db.serialize(function () {
 
         let sql = `SELECT nim, nama, alamat, nama_jurusan, umur FROM mahasiswa JOIN jurusan ON mahasiswa.jurusan = jurusan.id_jurusan`;
-        // `SELECT nim, nama, alamat, nama_jurusan, umur FROM mahasiswa JOIN jurusan ON mahasiswa.jurusan = jurusan.id_jurusan`
-
         db.all(sql, (err, rows) => {
             if (err) throw err;
             if (rows) {
@@ -134,16 +132,14 @@ function daftarmurid() {
                 });
                 console.log(table.toString());
                 mahasiswa();
-
-
                 //console.log(`${rows.nim}, ${rows.nama}, ${rows.alamat}, ${rows.jurusan}, ${rows.umur} `);
             }
             else {
                 console.log("DATA TIDAK BISA DITEMUKAN!!!");
+                mahasiswa();
             }
         });
     });
-    rl.close()
 }
 
 function carimurid() {
@@ -187,7 +183,6 @@ lengkapi data dibawah ini :
                             if (err) throw err;
                             console.log("Data Mahasiswa Berhasil di input")
                         });
-
                         let sql2 = `SELECT nim, nama, alamat, nama_jurusan, umur FROM mahasiswa JOIN jurusan ON mahasiswa.jurusan = jurusan.id_jurusan`;
                         db.all(sql2, (err, rows) => {
                             if (err) throw err;
@@ -205,8 +200,6 @@ lengkapi data dibawah ini :
                                 });
                                 console.log(table.toString());
                                 mahasiswa();
-
-
                             } else {
                                 console.log('data yang anda masukan salah');
                                 mahasiswa();
@@ -226,8 +219,6 @@ function deletemurid() {
         db.run(sql, (err) => {
             if (!err) console.log(`mahasiswa dengan NIM : '${nim}' telah dihapus`);
             console.log("=========================================================")
-
-
             db.all(sql2, (err, rows) => {
                 if (err) throw err;
                 if (rows) {
@@ -244,8 +235,6 @@ function deletemurid() {
                     });
                     console.log(table.toString());
                     mahasiswa();
-
-
                 } else {
                     console.log('data yang anda masukan salah');
                     mahasiswa();
@@ -291,7 +280,6 @@ function daftarjurusan() {
     console.log("=========================================================");
     db.serialize(function () {
         let sql = 'SELECT * FROM jurusan';
-
         db.all(sql, (err, rows) => {
             if (err) throw err;
             if (rows) {
@@ -304,8 +292,7 @@ function daftarjurusan() {
                 })
                 console.log(table.toString());
                 jurusan();
-            }
-            else {
+            } else {
                 console.log("DATA TIDAK BISA DI TEMUKAN!!!");
                 jurusan();
             }
@@ -347,7 +334,6 @@ Lengkapi Data dibawah ini :
                 if (err) throw err;
                 console.log("Data Jurusan Berhasil di Input");
             });
-
             let sql2 = 'SELECT * FROM jurusan';
             db.all(sql2, (err, rows) => {
                 if (err) throw err;
@@ -361,8 +347,7 @@ Lengkapi Data dibawah ini :
                     })
                     console.log(table.toString());
                     jurusan();
-                }
-                else {
+                } else {
                     console.log("DATA TIDAK BISA DI TEMUKAN!!!");
                     jurusan();
                 }
@@ -438,7 +423,6 @@ function daftardosen() {
     console.log("=========================================================");
     db.serialize(function () {
         let sql = 'SELECT * FROM dosen';
-
         db.all(sql, (err, rows) => {
             if (err) throw err;
             if (rows) {
@@ -451,14 +435,14 @@ function daftardosen() {
                 })
                 console.log(table.toString());
                 dosen();
-            }
-            else {
+            } else {
                 console.log("DATA TIDAK BISA DI TEMUKAN!!!");
                 dosen();
             }
         })
     })
 }
+
 function caridosen() {
     rl.question(`MASUKAN ID DOSEN: `, (answer) => {
         let sql = `SELECT * FROM dosen WHERE id_dosen = '${answer}'`
@@ -493,7 +477,6 @@ Lengkapi Data dibawah ini :
                 if (err) throw err;
                 console.log("Data Jurusan Berhasil di Input");
             });
-
             let sql2 = 'SELECT * FROM dosen';
             db.all(sql2, (err, rows) => {
                 if (err) throw err;
@@ -507,8 +490,7 @@ Lengkapi Data dibawah ini :
                     })
                     console.log(table.toString());
                     dosen();
-                }
-                else {
+                } else {
                     console.log("DATA TIDAK BISA DI TEMUKAN!!!");
                     dosen();
                 }
@@ -539,8 +521,7 @@ function hapusdosen() {
                     })
                     console.log(table.toString());
                     dosen();
-                }
-                else {
+                } else {
                     console.log("DATA TIDAK BISA DI TEMUKAN!!!");
                     dosen();
                 }
@@ -597,8 +578,7 @@ function daftarMatkul() {
                 })
                 console.log(table.toString());
                 matakuliah();
-            }
-            else {
+            } else {
                 console.log("DATA TIDAK BISA DI TEMUKAN!!!");
                 matakuliah();
             }
@@ -652,12 +632,11 @@ Lengkapi Data dibawah ini :
                             colWidths: [20, 20, 10]
                         })
                         rows.forEach(rows => {
-                            table.push([`${rows.id_matkul}`, `${rows.nama_matkul}`,`${rows.sks}`]);
+                            table.push([`${rows.id_matkul}`, `${rows.nama_matkul}`, `${rows.sks}`]);
                         })
                         console.log(table.toString());
                         matakuliah();
-                    }
-                    else {
+                    } else {
                         console.log("DATA TIDAK BISA DI TEMUKAN!!!");
                         matakuliah();
                     }
@@ -683,12 +662,11 @@ function hapusMatkul() {
                         colWidths: [20, 20, 10]
                     })
                     rows.forEach(rows => {
-                        table.push([`${rows.id_matkul}`, `${rows.nama_matkul}`,`${rows.sks}`]);
+                        table.push([`${rows.id_matkul}`, `${rows.nama_matkul}`, `${rows.sks}`]);
                     })
                     console.log(table.toString());
                     matakuliah();
-                }
-                else {
+                } else {
                     console.log("DATA TIDAK BISA DI TEMUKAN!!!");
                     matakuliah();
                 }
@@ -698,25 +676,156 @@ function hapusMatkul() {
 }
 
 function kontrak() {
+    console.log(`
+=========================================================
+silahkan pilih opsi dibawah ini
+[1] Daftar Kontrak
+[2] Cari Kontrak
+[3] Tambah Kontrak
+[4] Hapus Kontrak
+[5] Keluar
+=========================================================`)
+    rl.question(`masukan salah satu no. dari opsi diatas : `, (number) => {
+        console.log('=========================================================');
+        switch (number) {
+            case '1':
+                daftarKontrak();
+                break;
+            case '2':
+                cariKontrak();
+                break;
+            case '3':
+                tambahKontrak();
+                break;
+            case '4':
+                hapusKontrak();
+                break;
+            case '5':
+                mainmenu();
+        }
+    })
 
-    
 }
 
+function daftarKontrak() {
+    console.log("=========================================================");
+    db.serialize(function () {
+        let sql = 'SELECT * FROM kontrak';
 
+        db.all(sql, (err, rows) => {
+            if (err) throw err;
+            if (rows) {
+                var table = new Table({
+                    head: ['ID KONTRAK', 'ID DOSEN', 'NIM', 'ID MATKUL', 'NILAI'],
+                    colWidths: [20, 10, 10, 20, 10]
+                })
+                rows.forEach(rows => {
+                    table.push([`${rows.id_kontrak}`, `${rows.id_dosen}`, `${rows.nim}`, `${rows.id_matkul}`, `${rows.nilai}`]);
+                })
+                console.log(table.toString());
+                kontrak();
+            }  else {
+                console.log("DATA TIDAK BISA DI TEMUKAN!!!");
+                kontrak();
+            }
+        })
+    })
+}
 
+function cariKontrak() {
+    rl.question(`MASUKAN ID KONTRAK: `, (answer) => {
+        let sql = `SELECT * FROM kontrak WHERE id_kontrak = '${answer}'`
+        db.get(sql, (err, rows) => {
+            if (err) throw err;
+            if (rows) {
+                console.log(`
+=========================================================
+JURUSAN DETAIL
+=========================================================
+ID KONTRAK      : ${rows.id_kontrak}
+ID DOSEN        : ${rows.id_dosen}
+NIM             : ${rows.nim}
+ID MATKUL       : ${rows.id_matkul}
+NILAI           : ${rows.nilai}
+`);
+                kontrak();
+            } else {
+                console.log(`ID Kontrak dengan ID : ${answer} tidak ditemukan`);
+                kontrak();
+            }
+        })
+    })
+}
 
+function tambahKontrak() {
+    console.log(`
+=========================================================
+Lengkapi Data dibawah ini :
+        `)
+    rl.question('ID KONTRAK : ', (id) => {
+        rl.question('ID DOSEN : ', (nama) => {
+            rl.question('NIM : ', (nim) => {
+                rl.question('ID MATKUL : ', (matkul) => {
+                    rl.question('NILAI : ', (nilai) => {
+                        let sql = `INSERT INTO kontrak (id_kontrak, id_dosen, nim, id_matkul, nilai) VALUES ('${id}','${nama}','${nim}','${matkul}','${nilai}')`;
+                        let sql2 = `SELECT * FROM kontrak`;
 
+                        db.run(sql, (err) => {
+                            if (err) throw err;
+                            console.log("Data Kontrak Berhasil di Input");
+                        });
 
+                        db.all(sql2, (err, rows) => {
+                            if (err) throw err;
+                            if (rows) {
+                                var table = new Table({
+                                    head: ['ID KONTRAK', 'ID DOSEN', 'NIM', 'ID MATKUL', 'NILAI'],
+                                    colWidths: [20, 10, 10, 20, 10]
+                                })
+                                rows.forEach(rows => {
+                                    table.push([`${rows.id_kontrak}`, `${rows.id_dosen}`, `${rows.nim}`, `${rows.id_matkul}`, `${rows.nilai}`]);
+                                })
+                                console.log(table.toString());
+                                kontrak();
+                            } else {
+                                console.log("DATA TIDAK BISA DI TEMUKAN!!!");
+                                kontrak();
+                            }
+                        })
+                    })
+                })
+            })
+        })
+    })
+}
 
+function hapusKontrak() {
+    rl.question('Masukan ID Kontrak yang akan di hapus : ', (id2) => {
+        let sql = `DELETE FROM kontrak WHERE id_kontrak = '${id2}'`;
+        db.run(sql, (err) => {
+            if (!err) console.log(`Kontrak dengan ID KONTRAK : '${id2}' telah dihapus`);
+            console.log("=========================================================");
 
-
-
-
-
-
-
-
-
-
+            let sql2 = 'SELECT * FROM kontrak';
+            db.all(sql2, (err, rows) => {
+                if (err) throw err;
+                if (rows) {
+                    var table = new Table({
+                        head: ['ID KONTRAK', 'ID DOSEN', 'NIM', 'ID MATKUL', 'NILAI'],
+                        colWidths: [20, 10, 10, 20, 10]
+                    })
+                    rows.forEach(rows => {
+                        table.push([`${rows.id_kontrak}`, `${rows.id_dosen}`, `${rows.nim}`, `${rows.id_matkul}`, `${rows.nilai}`]);
+                    })
+                    console.log(table.toString());
+                    kontrak();
+                } else {
+                    console.log("DATA TIDAK BISA DI TEMUKAN!!!");
+                    kontrak();
+                }
+            })
+        })
+    })
+}
 
 login();
